@@ -9,7 +9,7 @@ interface Props {
 export default function ResidentProfile({ resident, onLogout }: Props) {
   const { dietary_preferences: prefs, allergies, notes } = resident.health_profile;
   return (
-    <section className="panel" aria-labelledby="profile-title">
+    <section className="panel profile" aria-labelledby="profile-title">
       <div className="panel-head">
         <h2 id="profile-title">{resident.display_name}</h2>
         <button type="button" className="secondary" onClick={onLogout}>

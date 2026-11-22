@@ -1,9 +1,10 @@
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { ApiError, askNutritionAssistant } from "../api/client";
 import type { NutritionResponse } from "../api/types";
 import { EXAMPLE_QUESTIONS, providerLabel, toolLabel } from "../labels";
 
 const MAX_QUESTION = 500;
+const BASKET_QUESTION = "依照我目前的購物籃和飲食偏好，推薦店內適合搭配補買的商品。";
 
 /**
  * Nutrition assistant. The backend decides which products to recommend (from database
@@ -15,32 +16,35 @@ export default function NutritionPanel({ residentId }: { residentId: number }) {
   const [result, setResult] = useState<NutritionResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const sourcesPanel = useRef<HTMLDetailsElement>(null);
 
-  async function submit(e: FormEvent) {
-    e.preventDefault();
-    const q = question.trim();
-    if (!q) return;
+  async function ask(q: string) {
+    if (!q || busy) return;
     setBusy(true);
     setError(null);
+    setResult(null);
     try {
       setResult(await askNutritionAssistant(residentId, q));
     } catch (err) {
-      setResult(null);
       setError(err instanceof ApiError ? err.message : "助理暫時無法回答，請稍後再試");
     } finally {
       setBusy(false);
     }
   }
 
+  function submit(e: FormEvent) {
+    e.preventDefault();
+    void ask(question.trim());
+  }
+
   return (
     <section className="panel" aria-labelledby="nutrition-title">
       <h2 id="nutrition-title">營養助理</h2>
       <p className="muted">
-        依據您的飲食偏好、商品營養資料與知識庫回答。預設使用本地 mock，不需要任何 API key。
-        助理只能提供資訊，價格、庫存與結帳都由後端系統決定，AI 無法修改。
+        可依飲食偏好查詢商品營養，也可以根據目前購物籃推薦店內適合搭配的食材。
       </p>
 
-      <form onSubmit={(e) => void submit(e)} className="ask-form">
+      <form onSubmit={submit} className="ask-form">
         <label htmlFor="nutrition-q">您的問題</label>
         <div className="ask-row">
           <input
@@ -56,35 +60,73 @@ export default function NutritionPanel({ residentId }: { residentId: number }) {
           </button>
         </div>
       </form>
-      <p className="muted small">
-        範例：
-        {EXAMPLE_QUESTIONS.map((q) => (
-          <button key={q} type="button" className="link chip" onClick={() => setQuestion(q)}>
-            {q}
-          </button>
-        ))}
-      </p>
+      <div className="assistant-actions">
+        <button
+          type="button"
+          className="secondary"
+          disabled={busy}
+          onClick={() => {
+            setQuestion(BASKET_QUESTION);
+            void ask(BASKET_QUESTION);
+          }}
+        >
+          購物籃推薦
+        </button>
+        <details className="assistant-examples">
+          <summary>提問範例</summary>
+          <div>
+            {EXAMPLE_QUESTIONS.map((q) => (
+              <button key={q} type="button" className="link chip" onClick={() => setQuestion(q)}>
+                {q}
+              </button>
+            ))}
+          </div>
+        </details>
+      </div>
 
       {error && <p role="alert" className="field-error">{error}</p>}
 
       {result && (
         <div className="result" role="status" aria-live="polite">
-          <p className="provider-line">
-            回答提供者：<span className={`badge badge-${result.provider}`}>{providerLabel(result.provider)}</span>
-          </p>
           {result.notice && <p className="note">{result.notice}</p>}
-          {result.provider === "anthropic" && (
+
+          {result.basket_items && (
             <p className="note">
-              已將您的飲食偏好、過敏原、最近購買的商品名稱與營養事實送至外部 LLM；
-              不含姓名、卡號、價格與庫存數量。
+              本次使用的購物籃：
+              {result.basket_items.map((item) => `${item.name} ${item.weight_grams} 公克`).join("、") || "空籃"}
             </p>
           )}
-
-          <div className="answer">{result.answer}</div>
+          <div className="answer">
+            {result.answer.split(/(\*\*[^*\n]+\*\*|\[[\w-]+\])/g).map((part, index) => {
+              if (part.startsWith("**") && part.endsWith("**")) {
+                return <strong key={index}>{part.slice(2, -2)}</strong>;
+              }
+              const sourceIndex = part.startsWith("[")
+                ? result.source_details.findIndex((source) => source.id === part.slice(1, -1))
+                : -1;
+              if (sourceIndex < 0) return part;
+              const sourceId = `nutrition-source-${sourceIndex}`;
+              return (
+                <a
+                  key={index}
+                  className="source-link"
+                  href={`#${sourceId}`}
+                  aria-label={`參考來源 ${sourceIndex + 1}`}
+                  onClick={() => {
+                    if (sourcesPanel.current) sourcesPanel.current.open = true;
+                    const source = document.getElementById(sourceId);
+                    if (source instanceof HTMLDetailsElement) source.open = true;
+                  }}
+                >
+                  [{sourceIndex + 1}]
+                </a>
+              );
+            })}
+          </div>
 
           {result.recommended_products.length > 0 && (
             <>
-              <h3>推薦商品（由後端依營養數據決定）</h3>
+              <h3>{result.basket_items ? "推薦補買商品" : "推薦商品（由後端依營養數據決定）"}</h3>
               <ul className="rec-list">
                 {result.recommended_products.map((p) => (
                   <li key={p.product_code}>
@@ -96,27 +138,38 @@ export default function NutritionPanel({ residentId }: { residentId: number }) {
             </>
           )}
 
-          <h3>參考來源</h3>
-          {result.source_details.length === 0 ? (
-            <p className="muted small">這次回答沒有引用知識庫片段。</p>
-          ) : (
-            <ul className="plain sources">
-              {result.source_details.map((s) => (
-                <li key={s.id}>
-                  <details>
-                    <summary>
-                      <span className="mono">{s.id}</span> · {s.title}
-                    </summary>
-                    <p className="small">{s.text}</p>
-                  </details>
-                </li>
-              ))}
-            </ul>
-          )}
+          <details className="disclosure" ref={sourcesPanel}>
+            <summary>參考來源（{result.source_details.length}）</summary>
+            {result.source_details.length === 0 ? (
+              <p className="muted small">這次回答沒有引用知識庫片段。</p>
+            ) : (
+              <ol className="sources">
+                {result.source_details.map((source, index) => (
+                  <li key={source.id}>
+                    <details id={`nutrition-source-${index}`}>
+                      <summary>{source.title}</summary>
+                      <p className="small">{source.text}</p>
+                    </details>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </details>
 
-          {result.tool_calls.length > 0 && (
-            <details className="attack">
-              <summary>助理使用的唯讀工具（{result.tool_calls.length} 次呼叫）</summary>
+          <details className="disclosure">
+            <summary>回答與資料使用資訊</summary>
+            <p className="provider-line">
+              回答提供者：<span className={`badge badge-${result.provider}`}>{providerLabel(result.provider)}</span>
+            </p>
+            {(result.provider === "anthropic" || result.provider === "gemini") && (
+              <p className="muted small">
+                外部 LLM 會收到問題、飲食偏好、過敏原、最近購買的商品名稱與營養事實。
+                {result.basket_items && "購物籃推薦也會傳送籃中商品名稱與重量。"}
+                傳送資料不含姓名、卡號、價格與庫存數量。
+              </p>
+            )}
+            {result.tool_calls.length > 0 && <>
+              <p className="small">助理使用的唯讀工具（{result.tool_calls.length} 次呼叫）</p>
               <ul className="plain small">
                 {result.tool_calls.map((t, i) => (
                   <li key={i}>
@@ -125,8 +178,8 @@ export default function NutritionPanel({ residentId }: { residentId: number }) {
                   </li>
                 ))}
               </ul>
-            </details>
-          )}
+            </>}
+          </details>
         </div>
       )}
     </section>

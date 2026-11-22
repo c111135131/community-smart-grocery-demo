@@ -126,8 +126,9 @@ cp .env.example .env
 | `CORS_ORIGINS` | 允許的前端來源（逗號分隔） | `http://localhost:5173,http://127.0.0.1:5173` |
 | `VITE_API_BASE_URL` | 前端呼叫的後端位址 | `http://localhost:8000` |
 | `IOT_SECRET_KEY` | 封包雜湊簽章用的**教學示範金鑰**（非密碼學安全） | `demo-secret-not-for-production` |
-| `AI_PROVIDER` | 營養助理提供者：`mock`（預設，不需金鑰）或 `anthropic` | `mock` |
-| `ANTHROPIC_API_KEY` / `AI_MODEL` | 僅在 `AI_PROVIDER=anthropic` 時需要，兩者缺一就改用 mock；**請勿提交真實金鑰** | 空 |
+| `AI_PROVIDER` | 營養助理提供者，可用 `mock`、`gemini` 或 `anthropic` | `mock` |
+| `GEMINI_API_KEY` / `ANTHROPIC_API_KEY` | 所選外部提供者的金鑰。**請勿提交真實金鑰**。 | 空 |
+| `AI_MODEL` | 使用 Anthropic 時必填。使用 Gemini 時可覆寫預設模型 `gemini-3.1-flash-lite`。 | 空 |
 | `AI_TIMEOUT_SECONDS` | 呼叫外部 LLM 的逾時秒數 | `20` |
 | `KNOWLEDGE_BASE_PATH` | 自訂知識庫 JSON 路徑（選填） | `knowledge_base/nutrition_seed.json` |
 
@@ -205,6 +206,8 @@ python -m app.simulator --device 1 --seq 1 --command ADD_ITEM --product 101 --we
 
 ### 8. 營養助理與 MCP（Phase 4）
 
+加入商品後，可點「購物籃推薦」或在問題裡提到購物籃。助理每次都會讀取當下的籃中商品與重量，再依飲食偏好及店內庫存推薦可補買的食材。畫面會列出這次使用的購物籃，方便確認加減商品後的結果。
+
 居民頁的「營養助理」可直接提問（預設 mock，**不需要任何 API key**）：
 
 - 回答依據居民的飲食偏好、資料庫中的商品營養數值與知識庫片段；商品推薦由後端決定性邏輯產生。
@@ -237,7 +240,17 @@ python -m app.ai.mcp_server        # stdio；通常由 MCP client 啟動，需�
 本專案只用官方 MCP Python SDK 的 stdio client 驗證過（見 `backend/tests/test_ai_mcp_server.py`）。
 這個 server 沒有驗證機制也沒有居民資料，**只應由受信任的本機 client 以 stdio 啟動，不要對網路開放**。
 
-**選用真實 LLM**（在 `.env` 設定，沒設定就一律使用 mock）：
+**選用 Gemini**。在專案根目錄的 `.env` 設定金鑰後重啟後端。
+
+```dotenv
+AI_PROVIDER=gemini
+GEMINI_API_KEY=...
+AI_MODEL=gemini-3.1-flash-lite
+```
+
+營養助理畫面應顯示「Gemini（外部 LLM）」，API 回應中的 `provider` 應為 `gemini`。
+
+**選用 Anthropic**：
 
 ```bash
 AI_PROVIDER=anthropic

@@ -35,25 +35,25 @@ export default function CheckoutPanel({ residentId, cart, onDone }: Props) {
 
   return (
     <section className="panel" aria-labelledby="checkout-title">
-      <h2 id="checkout-title">結帳（模擬付款）</h2>
-      <p className="muted">
-        不串接任何真實金流。付款成功才會建立訂單並扣庫存；付款失敗則保留購物車、不扣庫存，可重試。
-      </p>
-      <fieldset className="radio-row" disabled={busy}>
-        <legend>模擬付款結果</legend>
-        <label>
-          <input type="radio" name="pay" checked={payment === "SUCCESS"} onChange={() => setPayment("SUCCESS")} />
-          付款成功
-        </label>
-        <label>
-          <input type="radio" name="pay" checked={payment === "FAILURE"} onChange={() => setPayment("FAILURE")} />
-          付款失敗
-        </label>
-      </fieldset>
-      <button type="button" disabled={busy || empty} onClick={() => void submit()}>
+      <h2 id="checkout-title">結帳</h2>
+      <p className="muted">{payment === "FAILURE" ? "模擬付款失敗模式" : "模擬付款"}</p>
+      <button type="button" className="checkout-action" disabled={busy || empty} onClick={() => void submit()}>
         {busy ? "結帳中…" : cart && !empty ? `結帳 ${formatPrice(cart.total_amount)}` : "結帳"}
       </button>
-      {empty && !result && <span className="muted small"> 購物車是空的</span>}
+      <details className="disclosure">
+        <summary>付款測試設定</summary>
+        <fieldset className="radio-row" disabled={busy}>
+          <legend className="sr-only">模擬付款結果</legend>
+          <label>
+            <input type="radio" name="pay" checked={payment === "SUCCESS"} onChange={() => setPayment("SUCCESS")} />
+            付款成功
+          </label>
+          <label>
+            <input type="radio" name="pay" checked={payment === "FAILURE"} onChange={() => setPayment("FAILURE")} />
+            付款失敗
+          </label>
+        </fieldset>
+      </details>
 
       {error && <p role="alert" className="field-error">{error}</p>}
 
@@ -63,7 +63,7 @@ export default function CheckoutPanel({ residentId, cart, onDone }: Props) {
             <strong>
               {result.payment_status === "PAID"
                 ? `✓ 付款成功，訂單 #${result.order_id}`
-                : `✗ 付款失敗（紀錄為訂單 #${result.order_id}，狀態 FAILED）`}
+                : `✗ 付款失敗（訂單 #${result.order_id}）`}
             </strong>
             <span>{result.message}</span>
           </div>

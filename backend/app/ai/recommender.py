@@ -8,6 +8,7 @@ and is never given prices or stock quantities.
 All thresholds are DEMO values for illustration, not medical standards.
 """
 import re
+from collections.abc import Collection
 from dataclasses import dataclass, field
 
 from app.ai.tools import ProductFact
@@ -134,6 +135,8 @@ def recommend(
     preferences: list[str],
     inventory: list[ProductFact],
     mentioned_facts: list[ProductFact],
+    *,
+    excluded_product_codes: Collection[int] = (),
 ) -> Recommendation:
     """Rank in-stock products. `inventory` must include out-of-stock items so that a
     product named in the question can be reported as sold out instead of ignored."""
@@ -146,7 +149,10 @@ def recommend(
                 f"以下商品改以「{focus.label}」排序，{label}相關資訊請參考下方知識。"
             )
 
-    candidates = [p for p in inventory if p.in_stock and focus.metric in _per_100g(p)]
+    candidates = [
+        p for p in inventory
+        if p.in_stock and p.product_code not in excluded_product_codes and focus.metric in _per_100g(p)
+    ]
     if "low_sodium" in preferences and focus.key != "sodium":
         kept = [
             p for p in candidates

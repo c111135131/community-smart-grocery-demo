@@ -180,6 +180,7 @@ export interface NutritionResponse {
   notice: string | null;
   used_preferences: string[];
   recommended_products: RecommendedProduct[];
+  basket_items?: { product_code: number; name: string; weight_grams: number }[] | null;
   source_details: SourceSnippet[];
   tool_calls: ToolCall[];
 }

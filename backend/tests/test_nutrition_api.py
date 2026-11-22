@@ -139,6 +139,30 @@ def test_recent_paid_purchases_are_used_but_failed_ones_are_not(ai, client, resi
     assert "最近的購買紀錄" not in ask(ai, resident2_id, "推薦蔬菜").json()["answer"]
 
 
+def test_basket_recommendations_follow_the_current_residents_cart(ai, resident_id, resident2_id, db_session):
+    question = "依我的購物籃，推薦適合搭配補買的低鈉食材"
+    initial = ask(ai, resident_id, question).json()
+    assert initial["basket_items"] == []
+    assert initial["recommended_products"][0]["name"] == "香蕉"
+
+    add_event(ai, resident_id, code=107, grams=300)
+    add_event(ai, resident2_id, code=104, grams=350)
+    db_session.query(Product).filter_by(product_code=108).one().stock_grams = 0
+    db_session.commit()
+    before = snapshot(db_session)
+    result = ask(ai, resident_id, question).json()
+    assert result["basket_items"] == [{"product_code": 107, "name": "香蕉", "weight_grams": 300}]
+    assert {"香蕉", "蘋果"}.isdisjoint(p["name"] for p in result["recommended_products"])
+    assert "香蕉 300 公克" in result["answer"]
+    assert ask(ai, resident_id, "我還適合買什麼來搭配？").json()["basket_items"] == result["basket_items"]
+    assert snapshot(db_session) == before
+
+    add_event(ai, resident_id, command="REMOVE_ITEM", code=107, grams=300)
+    result = ask(ai, resident_id, question).json()
+    assert result["basket_items"] == []
+    assert result["recommended_products"][0]["name"] == "香蕉"
+
+
 def test_answer_never_states_prices(ai, resident_id, resident2_id):
     for rid in (resident_id, resident2_id):
         for q in ["請推薦適合我的低鈉食材", "番茄多少錢？", "哪個最便宜？", "香蕉適合我嗎"]:
@@ -208,6 +232,54 @@ def test_boundary_question_lengths_and_whitespace(ai, resident_id):
 
 
 # ============================================================ optional real provider (fake transport)
+@pytest.mark.parametrize("status", [200, 429])
+def test_gemini_configuration_and_response(client, resident_id, status):
+    from app.ai.providers import select_provider
+    from app.core.config import Settings
+
+    calls = []
+
+    def handler(request):
+        calls.append(request)
+        if status == 429:
+            return httpx.Response(429, json={"error": "demo-gemini-key"})
+        return httpx.Response(200, json={"candidates": [{"content": {"parts": [
+            {"thought": True, "text": "internal reasoning"},
+            {"text": "Gemini 回答"},
+        ]}}]})
+
+    configured = Settings(_env_file=None, ai_provider="gemini", gemini_api_key="demo-gemini-key")
+    add_event(client, resident_id, code=107, grams=300)
+    with httpx.Client(transport=httpx.MockTransport(handler)) as transport:
+        app.dependency_overrides[get_provider_selection] = lambda: select_provider(configured, transport)
+        response = ask(client, resident_id, "依我的購物籃，推薦適合搭配補買的低鈉食材")
+
+    assert response.status_code == 200
+    request, = calls
+    assert request.method == "POST"
+    assert str(request.url) == (
+        "https://generativelanguage.googleapis.com/v1beta/models/"
+        "gemini-3.1-flash-lite:generateContent"
+    )
+    assert request.headers["x-goog-api-key"] == "demo-gemini-key"
+    assert "demo-gemini-key" not in request.content.decode()
+    payload = json.loads(request.content)
+    assert payload["systemInstruction"]["parts"][0]["text"]
+    facts = json.loads(payload["contents"][0]["parts"][0]["text"])
+    assert facts["resident_preferences"] == ["low_sodium"]
+    assert facts["basket_items"] == [{"name": "香蕉", "weight_grams": 300}]
+    assert "香蕉" not in [p["name"] for p in facts["recommended_products"]]
+    result = response.json()
+    if status == 200:
+        assert result["provider"] == "gemini" and result["notice"] is None
+        assert result["answer"].startswith("Gemini 回答")
+        assert "internal reasoning" not in result["answer"]
+    else:
+        assert result["provider"] == "mock"
+        assert "HTTP 429" in result["notice"]
+        assert "demo-gemini-key" not in response.text
+
+
 def anthropic_selection(handler):
     prov = AnthropicProvider("sk-test-key", "test-model", 5, httpx.Client(transport=httpx.MockTransport(handler)))
     return ProviderSelection(prov)
