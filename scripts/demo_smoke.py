@@ -189,7 +189,7 @@ def run_demo(http: Http, log: Callable[[str], None] = print, card_id: str = "CAR
     d.section("9. Nutrition assistant (RAG + read-only tools)")
     advice = call("POST", f"/residents/{rid}/nutrition/recommendations",
                   {"question": "請推薦適合我的低鈉食材"}, status=200)
-    expect(advice["provider"] in ("mock", "anthropic"), f"answered by provider '{advice['provider']}'")
+    expect(advice["provider"] in ("mock", "anthropic", "gemini"), f"answered by provider '{advice['provider']}'")
     expect(bool(advice["answer"].strip()) and bool(advice["recommended_products"]),
            f"answer with {len(advice['recommended_products'])} recommended products")
     expect(bool(advice["sources"]) and (advice["provider"] != "mock"

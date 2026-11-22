@@ -32,11 +32,13 @@ from app.ai.retriever import Retriever
 from app.ai.tools import ToolBox, ToolRunner
 from app.models import Order, OrderItem, Resident
 from app.schemas.nutrition import (
+    BasketItem,
     NutritionResponse,
     RecommendedProductOut,
     SourceSnippetOut,
     ToolCallOut,
 )
+from app.services.cart_service import get_cart
 from app.services.resident_service import ResidentNotFoundError
 
 logger = logging.getLogger(__name__)
@@ -49,6 +51,9 @@ GUARDRAIL_ANSWER = (
 )
 MAX_ANSWER_CHARS = 4000
 RECENT_ORDERS = 3
+BASKET_QUESTION = re.compile(
+    r"購物籃|購物車|籃子|補買|還(?:可以|能|適合|要|該)?買|\b(?:basket|cart)\b", re.I,
+)
 
 # Requests to perform a transaction or change business data. The assistant cannot do
 # these anyway (it has no write tools); this just answers clearly instead of guessing.
@@ -115,7 +120,16 @@ class NutritionAgent:
             fact = runner.call("get_product_info", product_code=p.product_code)
             if fact is not None:
                 mentioned.append(fact)
-        rec = recommend(question, prefs, inventory, mentioned)
+        basket_items = None
+        if BASKET_QUESTION.search(question):
+            basket_items = [
+                BasketItem(product_code=item.product_code, name=item.name, weight_grams=item.weight_grams)
+                for item in get_cart(self._db, resident_id).items
+            ]
+        rec = recommend(
+            question, prefs, inventory, mentioned,
+            excluded_product_codes={item.product_code for item in basket_items or ()},
+        )
 
         tags = list(dict.fromkeys(
             [*prefs, rec.focus.knowledge_tag, *(["allergy"] if allergies else [])]
@@ -142,6 +156,7 @@ class NutritionAgent:
             question=question, preferences=prefs, allergies=allergies, recent_purchases=recent,
             recommendation=rec, product_snippets=product_snippets,
             topic_snippets=[SnippetRef(h.id, h.title, h.text) for h in topic_hits],
+            basket_items=basket_items,
         )
 
         system, user = build_prompt(facts)
@@ -162,6 +177,7 @@ class NutritionAgent:
             provider=provider.name,
             notice=notice,
             used_preferences=prefs,
+            basket_items=basket_items,
             recommended_products=[
                 RecommendedProductOut(product_code=p.product_code, name=p.name, reasons=p.reasons)
                 for p in rec.picks

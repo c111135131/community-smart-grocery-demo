@@ -43,8 +43,10 @@ export default function App() {
   return (
     <div className="shell">
       <header className="topbar">
-        <h1>社區智慧生鮮超市</h1>
-        <p className="tagline">課堂專題原型 · 教學展示用，非正式零售系統</p>
+        <div className="brand">
+          <h1>社區智慧生鮮超市</h1>
+          <span className="tagline">課堂展示</span>
+        </div>
         <nav aria-label="主要功能" className="tabs">
           <button
             type="button"

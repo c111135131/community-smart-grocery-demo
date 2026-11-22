@@ -7,6 +7,7 @@ quantities, NO resident name and NO card id.
 from dataclasses import dataclass, field
 
 from app.ai.recommender import Recommendation
+from app.schemas.nutrition import BasketItem
 
 
 @dataclass(frozen=True)
@@ -25,6 +26,7 @@ class GroundedFacts:
     recommendation: Recommendation
     product_snippets: dict[int, SnippetRef] = field(default_factory=dict)  # product_code -> entry
     topic_snippets: list[SnippetRef] = field(default_factory=list)
+    basket_items: list[BasketItem] | None = None
 
     @property
     def all_snippets(self) -> list[SnippetRef]:

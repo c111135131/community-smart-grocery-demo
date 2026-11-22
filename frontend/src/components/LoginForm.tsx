@@ -28,7 +28,7 @@ export default function LoginForm({ onLogin }: Props) {
   }
 
   return (
-    <section className="panel" aria-labelledby="login-title">
+    <section className="panel login-panel" aria-labelledby="login-title">
       <h2 id="login-title">居民登入</h2>
       <p className="muted">請輸入社區識別卡號（模擬感應刷卡）。</p>
       <form onSubmit={(e) => void submit(e)} className="login-form">

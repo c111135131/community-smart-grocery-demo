@@ -7,7 +7,6 @@ import CheckoutPanel from "./CheckoutPanel";
 import LoadError from "./LoadError";
 import Loading from "./Loading";
 import NutritionPanel from "./NutritionPanel";
-import ProductTable from "./ProductTable";
 import ResidentProfile from "./ResidentProfile";
 import SimulatorPanel from "./SimulatorPanel";
 
@@ -72,9 +71,7 @@ export default function ResidentView({ resident, onLogout }: Props) {
       setCart(r.cart);
       const last = r.events[r.events.length - 1];
       if (r.accepted) {
-        setCartNote(
-          `已透過 Gateway 送出 ${r.events.length} 個 REMOVE_ITEM 封包（最後一個：${last.packet_hex}）`,
-        );
+        setCartNote("已從購物籃移除商品。");
       } else {
         setCartError(
           `移除被拒絕：${rejectionLabel(last.rejection_code ?? "")}${
@@ -103,28 +100,26 @@ export default function ResidentView({ resident, onLogout }: Props) {
     <>
       <ResidentProfile resident={resident} onLogout={onLogout} />
       {loadError && <LoadError message={loadError} onRetry={reload} />}
-      <NutritionPanel residentId={resident.resident_id} />
-      <CartPanel
-        cart={cart}
-        removingId={removingId}
-        onRemove={(id) => void handleRemove(id)}
-        note={cartNote}
-        error={cartError}
-      />
-      <CheckoutPanel residentId={resident.resident_id} cart={cart} onDone={handleCheckout} />
-      {products && (
-        <SimulatorPanel
-          residentId={resident.resident_id}
-          products={products}
-          onResult={handleEventResult}
-        />
-      )}
-      <section className="panel" aria-labelledby="products-title">
-        <h2 id="products-title">今日生鮮</h2>
-        <p className="muted">價格與庫存由後端資料庫提供；付款成功後庫存會更新。</p>
-        {!loadError && products === null && <Loading />}
-        {products && <ProductTable products={products} caption="可購買的生鮮商品" />}
-      </section>
+      <div className="shop-layout">
+        <div className="shop-produce">
+          {products ? (
+            <SimulatorPanel residentId={resident.resident_id} products={products} onResult={handleEventResult} />
+          ) : !productsError && <section className="panel" aria-label="今日生鮮"><Loading /></section>}
+        </div>
+        <div className="shop-basket">
+          <CartPanel
+            cart={cart}
+            removingId={removingId}
+            onRemove={(id) => void handleRemove(id)}
+            note={cartNote}
+            error={cartError}
+          />
+          <CheckoutPanel residentId={resident.resident_id} cart={cart} onDone={handleCheckout} />
+        </div>
+        <div className="shop-assistant">
+          <NutritionPanel residentId={resident.resident_id} />
+        </div>
+      </div>
     </>
   );
 }

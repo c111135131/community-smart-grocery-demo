@@ -30,6 +30,12 @@ class RecommendedProductOut(BaseModel):
     reasons: list[str]
 
 
+class BasketItem(BaseModel):
+    product_code: int
+    name: str
+    weight_grams: int
+
+
 class ToolCallOut(BaseModel):
     """One read-only tool call made while answering (transparency for the demo)."""
 
@@ -41,9 +47,10 @@ class ToolCallOut(BaseModel):
 class NutritionResponse(BaseModel):
     answer: str
     sources: list[str]  # knowledge ids actually given to the provider
-    provider: str  # "mock", "anthropic" or "guardrail" (no model was called)
+    provider: str  # "mock", "gemini", "anthropic" or "guardrail"
     notice: str | None  # why a different provider than configured was used, if so
     used_preferences: list[str]
     recommended_products: list[RecommendedProductOut]
+    basket_items: list[BasketItem] | None = None  # None for questions outside basket recommendations
     source_details: list[SourceSnippetOut]
     tool_calls: list[ToolCallOut]

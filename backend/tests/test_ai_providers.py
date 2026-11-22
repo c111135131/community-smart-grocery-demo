@@ -48,6 +48,7 @@ def test_mock_spellings(value):
     ({"ai_provider": "anthropic"}, "ANTHROPIC_API_KEY"),
     ({"ai_provider": "anthropic", "anthropic_api_key": "k"}, "AI_MODEL"),
     ({"ai_provider": "anthropic", "ai_model": "m"}, "ANTHROPIC_API_KEY"),
+    ({"ai_provider": "gemini", "gemini_api_key": " "}, "GEMINI_API_KEY"),
     ({"ai_provider": "gpt-17"}, "gpt-17"),
 ])
 def test_incomplete_or_unknown_config_falls_back_to_mock_with_notice(kw, needle):

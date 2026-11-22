@@ -5,6 +5,10 @@ from pathlib import Path
 
 import pytest
 
+from app.ai.providers import MockProvider, ProviderSelection
+from app.api.nutrition import get_provider_selection
+from app.main import app
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
 import demo_smoke  # noqa: E402
 
@@ -14,6 +18,7 @@ def http(client, monkeypatch):
     # /health pings the REAL database engine; everything else here uses in-memory SQLite.
     # Pin it so this test never depends on whether PostgreSQL happens to be running.
     monkeypatch.setattr("app.api.health.check_database", lambda: True)
+    app.dependency_overrides[get_provider_selection] = lambda: ProviderSelection(MockProvider())
 
     def call(method, path, body=None):
         r = client.request(method, path, json=body)

@@ -95,6 +95,7 @@ export const paymentLabel = (s: string) => PAYMENT_LABELS[s] ?? s;
 export const PROVIDER_LABELS: Record<string, string> = {
   mock: "Mock（本地範本，未呼叫外部 LLM）",
   anthropic: "Anthropic（外部 LLM）",
+  gemini: "Gemini（外部 LLM）",
   guardrail: "護欄（未呼叫任何模型）",
 };
 export const providerLabel = (p: string) => PROVIDER_LABELS[p] ?? p;

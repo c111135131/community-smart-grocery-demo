@@ -2,6 +2,7 @@
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Repository root is three levels above this file (backend/app/core/config.py).
@@ -20,8 +21,9 @@ class Settings(BaseSettings):
     iot_secret_key: str = "demo-secret-not-for-production"
 
     # --- AI service (docs/ARCHITECTURE.md, Layer 4). Mock provider works with no key. ---
-    ai_provider: str = "mock"  # "mock" (default) or "anthropic"
+    ai_provider: str = "mock"  # "mock" (default), "anthropic", or "gemini"
     anthropic_api_key: str = ""  # only read when ai_provider == "anthropic"; never log it
+    gemini_api_key: SecretStr = SecretStr("")
     ai_model: str = ""  # model id for the real provider; required when it is enabled
     ai_timeout_seconds: float = 20.0
     knowledge_base_path: str = ""  # empty -> <repo>/knowledge_base/nutrition_seed.json
