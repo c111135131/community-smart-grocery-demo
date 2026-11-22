@@ -1,0 +1,342 @@
+{
+  "description": "Community Smart Grocery 營養種子知識庫（教學示範用）",
+  "disclaimer": "內容為一般性的飲食資訊，由專案作者撰寫，未經營養師或醫師審閱，不具醫療效力，也不是權威營養資料；產品營養數值請以資料庫商品資料為準。",
+  "version": 1,
+  "entries": [
+    {
+      "id": "nutrition_seed_001",
+      "title": "低鈉飲食的基本概念",
+      "text": "世界衛生組織建議成人每日鈉攝取量低於 2000 毫克（約相當於 5 公克食鹽）。新鮮蔬果天然含鈉通常很低，加工食品與調味料才是鈉的主要來源，因此選擇新鮮食材並減少額外調味，有助於控制鈉攝取。",
+      "tags": [
+        "low_sodium"
+      ],
+      "keywords": [
+        "低鈉",
+        "鈉",
+        "鹽",
+        "少鹽",
+        "減鈉",
+        "sodium",
+        "low sodium"
+      ],
+      "product_codes": []
+    },
+    {
+      "id": "nutrition_seed_002",
+      "title": "鉀與鈉的飲食方向",
+      "text": "鉀是人體需要的礦物質，新鮮蔬果如香蕉、菠菜、地瓜含鉀較多。多吃新鮮蔬果有助於提高鉀攝取，與降低鈉的飲食方向一致。但有腎臟疾病或被要求限制鉀攝取的人，應先諮詢醫師或營養師。",
+      "tags": [
+        "low_sodium",
+        "potassium"
+      ],
+      "keywords": [
+        "鉀",
+        "鉀離子",
+        "potassium",
+        "香蕉"
+      ],
+      "product_codes": []
+    },
+    {
+      "id": "nutrition_seed_003",
+      "title": "素食者的營養注意事項",
+      "text": "素食者可從豆類、全穀、堅果與蔬菜攝取多種營養。維生素 B12 主要存在於動物性食品，純素者通常需要強化食品或補充品，建議諮詢營養師。本店生鮮蔬果的營養資料沒有蛋白質與維生素 B12 欄位，無法用來評估這兩項。",
+      "tags": [
+        "vegetarian"
+      ],
+      "keywords": [
+        "素食",
+        "純素",
+        "蛋奶素",
+        "蛋白質",
+        "維生素B12",
+        "B12",
+        "vegetarian",
+        "vegan",
+        "protein"
+      ],
+      "product_codes": []
+    },
+    {
+      "id": "nutrition_seed_004",
+      "title": "鐵質與維生素 C 搭配",
+      "text": "植物性食物中的非血基質鐵吸收率較低，與富含維生素 C 的食物一起食用可以幫助吸收，例如菠菜搭配番茄或青花菜。",
+      "tags": [
+        "vegetarian",
+        "vitamin_c",
+        "iron"
+      ],
+      "keywords": [
+        "鐵",
+        "鐵質",
+        "貧血",
+        "吸收",
+        "菠菜",
+        "iron"
+      ],
+      "product_codes": [
+        103
+      ]
+    },
+    {
+      "id": "nutrition_seed_005",
+      "title": "膳食纖維的來源與建議",
+      "text": "多數飲食指南建議成人每日攝取約 25 公克或以上的膳食纖維，蔬菜、水果、全穀與豆類是主要來源。增加纖維攝取宜循序漸進，並搭配足夠的水分。",
+      "tags": [
+        "fiber"
+      ],
+      "keywords": [
+        "纖維",
+        "膳食纖維",
+        "便秘",
+        "腸道",
+        "飽足",
+        "fiber",
+        "fibre"
+      ],
+      "product_codes": []
+    },
+    {
+      "id": "nutrition_seed_006",
+      "title": "維生素 C 的來源與保存",
+      "text": "維生素 C 是水溶性維生素，存在於青花菜、番茄、高麗菜與多種水果。長時間高溫烹煮或久泡水會流失部分維生素 C；短時間快炒或在衛生前提下生食可保留較多。",
+      "tags": [
+        "vitamin_c"
+      ],
+      "keywords": [
+        "維生素C",
+        "維生素 C",
+        "維他命C",
+        "抗氧化",
+        "免疫",
+        "vitamin c",
+        "vitamin_c"
+      ],
+      "product_codes": []
+    },
+    {
+      "id": "nutrition_seed_007",
+      "title": "番茄的營養特色",
+      "text": "番茄熱量低、鈉含量低，含維生素 C 與茄紅素。茄紅素屬脂溶性，與少量油脂一起烹調有助於吸收。",
+      "tags": [
+        "product",
+        "low_sodium",
+        "vitamin_c"
+      ],
+      "keywords": [
+        "番茄",
+        "蕃茄",
+        "茄紅素",
+        "tomato"
+      ],
+      "product_codes": [
+        101
+      ]
+    },
+    {
+      "id": "nutrition_seed_008",
+      "title": "青花菜的營養特色",
+      "text": "青花菜含豐富的維生素 C 與膳食纖維，鈉含量低。蒸煮時間不宜過長，以保留較多營養。",
+      "tags": [
+        "product",
+        "vitamin_c",
+        "fiber"
+      ],
+      "keywords": [
+        "青花菜",
+        "花椰菜",
+        "綠花椰",
+        "broccoli"
+      ],
+      "product_codes": [
+        102
+      ]
+    },
+    {
+      "id": "nutrition_seed_009",
+      "title": "菠菜的營養特色",
+      "text": "菠菜是深綠色葉菜，含鉀、葉酸與鐵。菠菜含有草酸，汆燙後可減少草酸含量；有腎結石風險的人，飲食應諮詢專業人員。",
+      "tags": [
+        "product",
+        "potassium",
+        "iron"
+      ],
+      "keywords": [
+        "菠菜",
+        "葉酸",
+        "草酸",
+        "spinach"
+      ],
+      "product_codes": [
+        103
+      ]
+    },
+    {
+      "id": "nutrition_seed_010",
+      "title": "紅蘿蔔的營養特色",
+      "text": "紅蘿蔔含 β-胡蘿蔔素，在體內可轉換為維生素 A。β-胡蘿蔔素屬脂溶性，與少量油脂一起烹調有助於吸收。",
+      "tags": [
+        "product",
+        "fiber"
+      ],
+      "keywords": [
+        "紅蘿蔔",
+        "胡蘿蔔",
+        "胡蘿蔔素",
+        "維生素A",
+        "carrot"
+      ],
+      "product_codes": [
+        104
+      ]
+    },
+    {
+      "id": "nutrition_seed_011",
+      "title": "地瓜的營養特色",
+      "text": "地瓜屬根莖類，可作為部分主食的替代選擇，含膳食纖維與鉀。它的熱量與碳水化合物比葉菜類高，食用時宜注意份量。",
+      "tags": [
+        "product",
+        "fiber",
+        "potassium"
+      ],
+      "keywords": [
+        "地瓜",
+        "番薯",
+        "甘藷",
+        "主食",
+        "sweet potato"
+      ],
+      "product_codes": [
+        105
+      ]
+    },
+    {
+      "id": "nutrition_seed_012",
+      "title": "高麗菜的營養特色",
+      "text": "高麗菜熱量低、鈉含量低，含維生素 C 與纖維，生食或快炒都適合。",
+      "tags": [
+        "product",
+        "low_sodium",
+        "low_calorie",
+        "vitamin_c"
+      ],
+      "keywords": [
+        "高麗菜",
+        "甘藍",
+        "包心菜",
+        "cabbage"
+      ],
+      "product_codes": [
+        106
+      ]
+    },
+    {
+      "id": "nutrition_seed_013",
+      "title": "香蕉的營養特色",
+      "text": "香蕉含鉀，天然鈉含量極低，方便攜帶。它的熱量與糖分比多數蔬菜高，宜依個人需求控制份量。",
+      "tags": [
+        "product",
+        "low_sodium",
+        "potassium"
+      ],
+      "keywords": [
+        "香蕉",
+        "banana"
+      ],
+      "product_codes": [
+        107
+      ]
+    },
+    {
+      "id": "nutrition_seed_014",
+      "title": "蘋果的營養特色",
+      "text": "蘋果含膳食纖維，鈉含量極低。洗淨後連皮食用，可攝取較多膳食纖維。",
+      "tags": [
+        "product",
+        "low_sodium",
+        "fiber"
+      ],
+      "keywords": [
+        "蘋果",
+        "apple"
+      ],
+      "product_codes": [
+        108
+      ]
+    },
+    {
+      "id": "nutrition_seed_015",
+      "title": "食物過敏的提醒",
+      "text": "有食物過敏的人應以商品標示與成分資訊為準。本示範系統的商品資料沒有過敏原欄位，無法判斷商品是否含有特定過敏原，請自行確認。",
+      "tags": [
+        "allergy"
+      ],
+      "keywords": [
+        "過敏",
+        "過敏原",
+        "花生",
+        "allergy",
+        "allergen",
+        "peanut"
+      ],
+      "product_codes": []
+    },
+    {
+      "id": "nutrition_seed_016",
+      "title": "一般飲食資訊的限制",
+      "text": "本系統提供的是一般飲食資訊，不能取代醫師或營養師的個人化建議。有慢性疾病、懷孕或特殊飲食需求的人，請諮詢專業人員。",
+      "tags": [
+        "disclaimer"
+      ],
+      "keywords": [
+        "醫療",
+        "疾病",
+        "診斷",
+        "治療",
+        "懷孕",
+        "慢性病",
+        "糖尿病",
+        "腎臟"
+      ],
+      "product_codes": []
+    },
+    {
+      "id": "nutrition_seed_017",
+      "title": "熱量與體重管理",
+      "text": "葉菜與瓜果類通常熱量較低，根莖類與部分水果熱量較高。體重管理應綜合考量整體飲食與活動量，而不是只看單一食材。",
+      "tags": [
+        "low_calorie"
+      ],
+      "keywords": [
+        "熱量",
+        "低熱量",
+        "減重",
+        "減肥",
+        "體重",
+        "卡路里",
+        "calorie",
+        "calories"
+      ],
+      "product_codes": []
+    },
+    {
+      "id": "nutrition_seed_018",
+      "title": "烹調方式與鈉攝取",
+      "text": "以蒸、烤、快炒搭配蔥薑蒜、檸檬或香草調味，可以減少鹽與醬料的用量；醬油、各式醬料與加工肉品的鈉含量通常較高。",
+      "tags": [
+        "low_sodium",
+        "cooking"
+      ],
+      "keywords": [
+        "烹調",
+        "調味",
+        "醬油",
+        "加工食品",
+        "料理",
+        "做法",
+        "cooking"
+      ],
+      "product_codes": []
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1210 925" width="1210" height="925" font-family="'Noto Sans TC','PingFang TC','Microsoft JhengHei','Segoe UI',Helvetica,Arial,sans-serif" role="img" aria-labelledby="t d">
+<title id="t">Community Smart Grocery as-built architecture</title>
+<desc id="d">Three lanes: the simulated IoT packet path, the REST path to the authoritative backend, and the read-only smart service, all backed by PostgreSQL and a local knowledge base.</desc>
+<defs>
+<marker id="ah-2d6a3e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2d6a3e"/></marker>
+<marker id="ah-8a5a00" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8a5a00"/></marker>
+<marker id="ah-243b63" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#243b63"/></marker>
+<marker id="ah-a63a2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a63a2b"/></marker>
+<marker id="ah-55655a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#55655a"/></marker>
+</defs>
+<rect width="1210" height="925" fill="#ffffff"/>
+<text x="30" y="34" font-size="21" font-weight="700" fill="#1f4a2b">社區智慧生鮮超市 · 實際建置架構</text>
+<text x="30" y="56" font-size="12.5" fill="#55655a">Community Smart Grocery — as-built architecture · 軟體原型，僅供教學展示 · software prototype, demo only</text>
+<rect x="22" y="68" width="336" height="640" rx="12" fill="#fbf5e8" opacity="0.75"/>
+<text x="190.0" y="92" text-anchor="middle" font-size="13.5" font-weight="700" fill="#3d4d43">IoT 封包路徑（模擬）</text>
+<rect x="372" y="68" width="396" height="640" rx="12" fill="#eef5ef" opacity="0.75"/>
+<text x="570.0" y="92" text-anchor="middle" font-size="13.5" font-weight="700" fill="#3d4d43">REST 路徑（權威後端）</text>
+<rect x="782" y="68" width="376" height="640" rx="12" fill="#eef1f8" opacity="0.75"/>
+<text x="970.0" y="92" text-anchor="middle" font-size="13.5" font-weight="700" fill="#3d4d43">智慧服務（唯讀）</text>
+<rect x="40" y="108" width="300" height="92" rx="9" fill="#fff3d6" stroke="#8a5a00" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="190.0" y="135" text-anchor="middle" font-size="15.5" font-weight="700" fill="#1c2a21">Python IoT Simulator</text>
+<text x="190.0" y="157" text-anchor="middle" font-size="12.2" fill="#3d4d43">backend/app/simulator</text>
+<text x="190.0" y="175" text-anchor="middle" font-size="12.2" fill="#3d4d43">產生 16-byte 封包 · 不計算價格</text>
+<rect x="40" y="233" width="300" height="92" rx="9" fill="#e3efe5" stroke="#2d6a3e" stroke-width="2"/>
+<text x="190.0" y="260" text-anchor="middle" font-size="15.5" font-weight="700" fill="#1c2a21">Packet codec</text>
+<text x="190.0" y="282" text-anchor="middle" font-size="12.2" fill="#3d4d43">gateway/packet.py · Header AA55</text>
+<text x="190.0" y="300" text-anchor="middle" font-size="12.2" fill="#3d4d43">XOR + 雜湊表檢查碼（教學用）</text>
+<rect x="40" y="358" width="300" height="92" rx="9" fill="#fff3d6" stroke="#8a5a00" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="190.0" y="385" text-anchor="middle" font-size="15.5" font-weight="700" fill="#1c2a21">MatterTransportAdapter</text>
+<text x="190.0" y="407" text-anchor="middle" font-size="12.2" fill="#3d4d43">SimulatedMatterThreadTransport</text>
+<text x="190.0" y="425" text-anchor="middle" font-size="12.2" fill="#3d4d43">軟體模擬 · 無真實 Thread / Matter</text>
+<rect x="40" y="483" width="300" height="100" rx="9" fill="#e3efe5" stroke="#2d6a3e" stroke-width="2"/>
+<text x="190.0" y="510" text-anchor="middle" font-size="15.5" font-weight="700" fill="#1c2a21">Gateway validator + event mapper</text>
+<text x="190.0" y="532" text-anchor="middle" font-size="12.2" fill="#3d4d43">長度→Header→指令→檢查碼→裝置→序號→欄位</text>
+<text x="190.0" y="550" text-anchor="middle" font-size="12.2" fill="#3d4d43">通過才產生 NormalizedIoTEvent</text>
+<path d="M 190,200 L 190,233" fill="none" stroke="#2d6a3e" stroke-width="2.2" marker-end="url(#ah-2d6a3e)"/>
+<text x="200" y="222" font-size="11.5" font-weight="600" fill="#2d6a3e" text-anchor="start">16 bytes</text>
+<path d="M 190,325 L 190,358" fill="none" stroke="#2d6a3e" stroke-width="2.2" marker-end="url(#ah-2d6a3e)"/>
+<path d="M 190,450 L 190,483" fill="none" stroke="#2d6a3e" stroke-width="2.2" marker-end="url(#ah-2d6a3e)"/>
+<text x="200" y="473" font-size="11.5" font-weight="600" fill="#2d6a3e" text-anchor="start">16 bytes</text>
+<rect x="390" y="108" width="360" height="92" rx="9" fill="#e3efe5" stroke="#2d6a3e" stroke-width="2"/>
+<text x="570.0" y="135" text-anchor="middle" font-size="15.5" font-weight="700" fill="#1c2a21">Resident &amp; Admin Web UI</text>
+<text x="570.0" y="157" text-anchor="middle" font-size="12.2" fill="#3d4d43">React + TypeScript + Vite</text>
+<text x="570.0" y="175" text-anchor="middle" font-size="12.2" fill="#3d4d43">只顯示，不做可信的價格計算</text>
+<rect x="390" y="233" width="360" height="92" rx="9" fill="#e3efe5" stroke="#2d6a3e" stroke-width="2"/>
+<text x="570.0" y="260" text-anchor="middle" font-size="15.5" font-weight="700" fill="#1c2a21">HTTP REST（JSON）</text>
+<text x="570.0" y="282" text-anchor="middle" font-size="12.2" fill="#3d4d43">瀏覽器 ⇄ FastAPI 唯一實作的通訊協定</text>
+<text x="570.0" y="300" text-anchor="middle" font-size="12.2" fill="#3d4d43">含逾時、錯誤與重試處理</text>
+<rect x="390" y="358" width="360" height="92" rx="9" fill="#e3efe5" stroke="#2d6a3e" stroke-width="2"/>
+<text x="570.0" y="385" text-anchor="middle" font-size="15.5" font-weight="700" fill="#1c2a21">FastAPI routers</text>
+<text x="570.0" y="407" text-anchor="middle" font-size="12.2" fill="#3d4d43">api/ · residents · products · cart</text>
+<text x="570.0" y="425" text-anchor="middle" font-size="12.2" fill="#3d4d43">checkout · nutrition · admin</text>
+<rect x="390" y="483" width="360" height="100" rx="9" fill="#e3efe5" stroke="#2d6a3e" stroke-width="2"/>
+<text x="570.0" y="510" text-anchor="middle" font-size="15.5" font-weight="700" fill="#1c2a21">權威後端服務 Authoritative services</text>
+<text x="570.0" y="532" text-anchor="middle" font-size="12.2" fill="#3d4d43">cart_service · pricing · checkout_service</text>
+<text x="570.0" y="550" text-anchor="middle" font-size="12.2" fill="#3d4d43">iot_service（序號與稽核）· order_service</text>
+<path d="M 570,200 L 570,233" fill="none" stroke="#2d6a3e" stroke-width="2.2" marker-end="url(#ah-2d6a3e)"/>
+<path d="M 570,325 L 570,358" fill="none" stroke="#2d6a3e" stroke-width="2.2" marker-end="url(#ah-2d6a3e)"/>
+<path d="M 570,450 L 570,483" fill="none" stroke="#2d6a3e" stroke-width="2.2" marker-end="url(#ah-2d6a3e)"/>
+<path d="M 340,537 L 390,537" fill="none" stroke="#2d6a3e" stroke-width="2.2" marker-end="url(#ah-2d6a3e)"/>
+<text x="348" y="529" font-size="11.5" font-weight="600" fill="#2d6a3e" text-anchor="start">event</text>
+<rect x="800" y="108" width="340" height="92" rx="9" fill="#e4ebf7" stroke="#243b63" stroke-width="2"/>
+<text x="970.0" y="135" text-anchor="middle" font-size="15.5" font-weight="700" fill="#1c2a21">MCP server（stdio）</text>
+<text x="970.0" y="157" text-anchor="middle" font-size="12.2" fill="#3d4d43">app/ai/mcp_server.py · 同一組 3 個唯讀工具</text>
+<text x="970.0" y="175" text-anchor="middle" font-size="12.2" fill="#3d4d43">供外部 MCP client 使用 · 無驗證</text>
+<rect x="800" y="358" width="340" height="92" rx="9" fill="#e4ebf7" stroke="#243b63" stroke-width="2"/>
+<text x="970.0" y="385" text-anchor="middle" font-size="15.5" font-weight="700" fill="#1c2a21">Nutrition agent</text>
+<text x="970.0" y="407" text-anchor="middle" font-size="12.2" fill="#3d4d43">脈絡 → 護欄 → 工具 → 推薦 → 措辭</text>
+<text x="970.0" y="425" text-anchor="middle" font-size="12.2" fill="#3d4d43">AI 只措辭，不決定價格、庫存、付款</text>
+<rect x="800" y="483" width="340" height="100" rx="9" fill="#e4ebf7" stroke="#243b63" stroke-width="2"/>
+<text x="970.0" y="510" text-anchor="middle" font-size="15.5" font-weight="700" fill="#1c2a21">Recommender + providers</text>
+<text x="970.0" y="532" text-anchor="middle" font-size="12.2" fill="#3d4d43">後端依營養數據決定性排序</text>
+<text x="970.0" y="550" text-anchor="middle" font-size="12.2" fill="#3d4d43">Mock（預設）· 選用 Anthropic</text>
+<rect x="800" y="608" width="340" height="92" rx="9" fill="#e4ebf7" stroke="#243b63" stroke-width="2"/>
+<text x="970.0" y="635" text-anchor="middle" font-size="15.5" font-weight="700" fill="#1c2a21">Read-only ToolBox（MCP 風格）</text>
+<text x="970.0" y="657" text-anchor="middle" font-size="12.2" fill="#3d4d43">get_product_info · get_inventory</text>
+<text x="970.0" y="675" text-anchor="middle" font-size="12.2" fill="#3d4d43">search_nutrition_knowledge（RAG）</text>
+<path d="M 750,404 L 800,404" fill="none" stroke="#243b63" stroke-width="2.2" marker-end="url(#ah-243b63)"/>
+<text x="758" y="396" font-size="11.5" font-weight="600" fill="#243b63" text-anchor="start">問答</text>
+<path d="M 970,450 L 970,483" fill="none" stroke="#243b63" stroke-width="2.2" marker-end="url(#ah-243b63)"/>
+<path d="M 970,591 L 970,608" fill="none" stroke="#243b63" stroke-width="2.2" marker-end="url(#ah-243b63)"/>
+<path d="M 1140,154 L 1175,154 L 1175,654 L 1140,654" fill="none" stroke="#243b63" stroke-width="2.2" marker-end="url(#ah-243b63)"/>
+<text x="1193" y="400" font-size="11.5" font-weight="600" fill="#243b63" text-anchor="middle" transform="rotate(-90 1193 400)">同一組工具</text>
+<rect x="22" y="722" width="1136" height="124" rx="12" fill="#f4f4f1" opacity="0.9"/>
+<text x="30" y="741" font-size="13.5" font-weight="700" fill="#3d4d43">資料層 Data</text>
+<rect x="40" y="752" width="710" height="84" rx="9" fill="#ffffff" stroke="#55655a" stroke-width="2"/>
+<text x="395.0" y="779" text-anchor="middle" font-size="15.5" font-weight="700" fill="#1c2a21">PostgreSQL 16</text>
+<text x="395.0" y="801" text-anchor="middle" font-size="12.2" fill="#3d4d43">residents · health_profiles · products · carts · cart_items · orders</text>
+<text x="395.0" y="819" text-anchor="middle" font-size="12.2" fill="#3d4d43">order_items · iot_events（稽核）· devices（序號狀態）</text>
+<rect x="800" y="752" width="340" height="84" rx="9" fill="#ffffff" stroke="#55655a" stroke-width="2"/>
+<text x="970.0" y="779" text-anchor="middle" font-size="15.5" font-weight="700" fill="#1c2a21">知識庫 Knowledge base</text>
+<text x="970.0" y="801" text-anchor="middle" font-size="12.2" fill="#3d4d43">knowledge_base/nutrition_seed.json</text>
+<text x="970.0" y="819" text-anchor="middle" font-size="12.2" fill="#3d4d43">18 則 · 本地檢索（教學資料）</text>
+<path d="M 570,591 L 570,752" fill="none" stroke="#55655a" stroke-width="2.2" marker-end="url(#ah-55655a)"/>
+<text x="580" y="700" font-size="11.5" font-weight="600" fill="#55655a" text-anchor="start">讀寫</text>
+<path d="M 1050,700 L 1050,752" fill="none" stroke="#243b63" stroke-width="2.2" marker-end="url(#ah-243b63)"/>
+<text x="1060" y="733" font-size="11.5" font-weight="600" fill="#243b63" text-anchor="start">唯讀</text>
+<path d="M 860,700 L 860,716 L 700,716 L 700,752" fill="none" stroke="#243b63" stroke-width="2.2" marker-end="url(#ah-243b63)"/>
+<text x="720" y="709" font-size="11.5" font-weight="600" fill="#243b63" text-anchor="start">唯讀</text>
+<rect x="30" y="866" width="26" height="14" rx="3" fill="#fff3d6" stroke="#8a5a00" stroke-width="2" stroke-dasharray="5 3"/>
+<text x="64" y="878" font-size="12.5" fill="#3d4d43">虛線 = 模擬的硬體／傳輸（沒有真實 ESP32、Thread、Matter）</text>
+<rect x="470" y="866" width="26" height="14" rx="3" fill="#e3efe5" stroke="#2d6a3e" stroke-width="2"/>
+<text x="504" y="878" font-size="12.5" fill="#3d4d43">實線 = 已實作的軟體</text>
+<rect x="680" y="866" width="26" height="14" rx="3" fill="#e4ebf7" stroke="#243b63" stroke-width="2"/>
+<text x="714" y="878" font-size="12.5" fill="#3d4d43">藍色 = AI 層，對交易資料唯讀</text>
+<text x="30" y="906" font-size="12" fill="#55655a">本機以 Docker Compose 啟動：db（PostgreSQL）· backend（FastAPI :8000）· frontend（nginx :5173）。不串接真實金流；檢查碼與登入僅為教學示範，非正式安全機制。</text>
+</svg>

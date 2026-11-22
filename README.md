@@ -423,5 +423,3 @@ scripts/        demo_smoke.py（端到端 Demo 檢查）
 docs/           規格文件、DEMO_GUIDE.md、DIAGRAMS.md、architecture.svg
 docker-compose.yml  .env.example  .dockerignore
 ```
-#   c o m m u n i t y - s m a r t - g r o c e r y - d e m o  
- 

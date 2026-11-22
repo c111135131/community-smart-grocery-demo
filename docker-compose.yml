@@ -1,0 +1,70 @@
+# Full demo stack (database + API + web UI):
+#     docker compose up --build        then open http://localhost:5173
+# Database only (run backend/frontend yourself, see README "本機開發"):
+#     docker compose up -d db
+#
+# Demo only: every published port is bound to 127.0.0.1 because the demo uses an example
+# password and has no admin authentication. Do not expose these ports to a network.
+#
+# Compose reads the repo-root .env for the ${VAR:-default} values below (optional: the
+# defaults match .env.example). DATABASE_URL in .env is for a backend running OUTSIDE
+# Docker and is deliberately not used here; the containers get their own URL.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: grocery-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-grocery}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-grocery_demo_pw}
+      POSTGRES_DB: ${POSTGRES_DB:-community_grocery}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-grocery} -d ${POSTGRES_DB:-community_grocery}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: grocery-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-grocery}:${POSTGRES_PASSWORD:-grocery_demo_pw}@db:5432/${POSTGRES_DB:-community_grocery}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
+      IOT_SECRET_KEY: ${IOT_SECRET_KEY:-demo-secret-not-for-production}
+      AI_PROVIDER: ${AI_PROVIDER:-mock}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      AI_MODEL: ${AI_MODEL:-}
+      AI_TIMEOUT_SECONDS: ${AI_TIMEOUT_SECONDS:-20}
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 40s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        # Must be reachable from the BROWSER, not from inside Docker.
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
+    container_name: grocery-frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:5173:80"
+
+volumes:
+  pgdata:

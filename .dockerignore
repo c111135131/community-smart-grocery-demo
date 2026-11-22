@@ -1,0 +1,11 @@
+# Keep the build context small and never ship secrets or local environments.
+.git
+.env
+**/.venv
+**/node_modules
+**/dist
+**/__pycache__
+**/.pytest_cache
+**/*.tsbuildinfo
+docs
+simulator
